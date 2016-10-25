@@ -3,30 +3,40 @@ var transition = 1000;
 var crtImage = $('.visible');
 var nextImage;
 
-// definire interval animatie
+/**
+ * we define the animation interval
+ */
 var interval = setInterval(rotate, delay);
 
 function rotate(){
   crtImage = $('.visible');
   nextImage = crtImage.next();
 
-  //verific daca poza urmatoare nu exista
-  //daca nu exista, poza urmatoare este prima poza
+  /**
+   * we check that the next image exist
+   * if it does not exist, then the next image will be first
+   */
   if(nextImage.length == 0){
     nextImage = $('.slide img').first();
   }
 
   nextImage.addClass('next');
 
-  //definesc animatia
+    /**
+     * We define the animation
+     */
   crtImage.animate({
     'opacity':'0'
   }, transition, function(){
     crtImage.removeClass('visible');
     nextImage.removeClass('next').addClass('visible');
-    // fac poza curenta vizibila din nou pentru ciclul urmator de animatie
+      /**
+       * We make the current image visible again for the next cicle
+       */
     crtImage.css('opacity', '1');
-    // schimb link-ul curent
+      /**
+       * We change the current link
+       */
     var crtLink = $('.current');
     var nextLink = crtLink.next();
     if(nextLink.length == 0){
@@ -37,35 +47,51 @@ function rotate(){
   });
 }
 
-// adaug evenimente mouse enter/leave
+/**
+ * We add events for mouse enter/leave
+ */
 $('.slide img').on('mouseenter', function(){
-  //intrerup animatia
+    /**
+     * We stop the animation
+     */
   clearInterval(interval);
 });
 $('.slide img').on('mouseleave', function(){
-  //repornesc animatia
+    /**
+     * We restart the animation
+     */
   interval = setInterval(rotate, delay);
 });
 
 $('.controls a').on('click', changeImage);
 
 function changeImage(e){
-  // dezactivez functionalitatea implicita a link-ul
+    /**
+     * We disable the default functionality of the link
+     */
   e.preventDefault();
   $('.current').removeClass('current');
   $(this).addClass('current');
 
-  //aflu pe ce bulina s-a dat click
+    /**
+     * We find out on what bullet the user cliecked
+     */
   var slide = $(this).data('slide') - 1;
 
-  // opresc orice animatie in desfasurare
+    /**
+     * We stop any animation in progress
+     */
   crtImage.stop();
   crtImage.css('opacity', '1');
 
-  // selectez imaginea corespunzatoare
+    /**
+     * We select the proper image
+     */
   crtImage = $($('.slide img').get(slide));
-  // elimin class visible de la imaginea acutala
-  //si adaug clasa pozei selectate anterior
+    /**
+     * We remove visible class from the current image
+     * We add the visible class to the previous image
+     */
   $('.visible').removeClass('visible');
   crtImage.addClass('visible');
 
